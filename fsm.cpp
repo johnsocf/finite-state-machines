@@ -74,12 +74,19 @@ int FSM::countTransitions() {
 
 int FSM::getCurrentState() {
   // TODO
-  return 0;
+  return this->state;
+  //return 0;
 }
 
 bool FSM::isAcceptState() {
   // TODO
-  return false;
+  bool current_state = false;
+  int current_state_index = this->state;
+  if (this->states.size() > 0) {
+      State* pointer_to_current_state = this.states[current_state_index];
+      current_state = pointer_to_current_state->accept;
+  }
+  return current_state;
 }
 
 State* FSM::getState(int id) {
@@ -102,7 +109,8 @@ Transition* FSM::getTransition(int id) {
 
 int FSM::getDefaultState() {
   // TODO
-  return 0;
+    return this->default_state;
+  //return 0;
 }
 
 void FSM::setState(int id) {
@@ -114,10 +122,18 @@ bool FSM::handleSignal(int signal) {
   // implementation. Here's my pseudocode:
   //
   // 1. If the FSM is currently in a bad state, return false.
+    if (this->state == -1) {return false;}
   //
   // 2. Iterate through the current state's normal transitions and
   // look for one that has the same signal as the one given to the
   // method.
+
+    for (int i=0; i<this->state->trans.size(); i++) {
+
+        if (this->transitions[i]->signal == signal) {
+            //if
+        }
+    }
   //
   // 3. If there wasn't a normal transition, see if there was a
   // failure_trans transition for the state. If not, return false.
