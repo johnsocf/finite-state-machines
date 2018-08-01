@@ -8,16 +8,31 @@ using namespace std;
 
 FSM::FSM() {
   // TODO
+  this->state = -1;
+  this->default_state = -1;
 }
 
 int FSM::addState(string label, bool is_accept_state) {
   // TODO
-  return 0;
+  State* new_state = new State;
+  new_state->label = label;
+  new_state->accept = is_accept_state;
+  new_state->failure_trans = -1;
+  //new_state->trans;
+  this->states.push_back(new_state);
+  int state_list_length = this->states.size();
+  int index_of_new_state = state_list_length - 1;
+  if (state_list_length = 1) {
+      this->state = index_of_new_state;
+      this->default_state = index_of_new_state;
+  }
+  return index_of_new_state;
 }
 
 int FSM::addState(string label) {
   // TODO
-  return 0;
+  return addState(label, false);
+  //return 0;
 }
 
 int FSM::addTransition(int stateA, int stateB, 
@@ -69,7 +84,15 @@ bool FSM::isAcceptState() {
 
 State* FSM::getState(int id) {
   // TODO
-  return NULL;
+  FSM* fsm = this;
+  //cout << "this id? " << id << " = " << fsm->states[id] << "\n";
+  if (fsm->states[id] != NULL  && (fsm->states.size() > id)) {
+      //cout << "state size? " << id << " = " << fsm->states.size() << "\n";
+      return fsm->states[id];
+  } else {
+      return NULL;
+  }
+
 }
 
 Transition* FSM::getTransition(int id) {
