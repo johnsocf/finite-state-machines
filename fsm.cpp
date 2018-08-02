@@ -21,8 +21,9 @@ int FSM::addState(string label, bool is_accept_state) {
   //new_state->trans;
   this->states.push_back(new_state);
   int state_list_length = this->states.size();
+  cout << "state list length: " << this->states.size() << "\n";
   int index_of_new_state = state_list_length - 1;
-  if (state_list_length = 1) {
+  if (state_list_length == 1) {
       this->state = index_of_new_state;
       this->default_state = index_of_new_state;
   }
@@ -64,16 +65,21 @@ int FSM::addTransition(int stateA, int stateB,
 
 int FSM::countStates() {
   // TODO
-  return 0;
+    return this->states.size();
+  //return 0;
 }
 
 int FSM::countTransitions() {
   // TODO
-  return 0;
+    return this->transitions.size();
+  //return 0;
 }
 
 int FSM::getCurrentState() {
   // TODO
+  cout << "current state: " << this->state << "\n";
+  int i = this->state;
+  //cout << this->states[i]->label << '\n';
   return this->state;
   //return 0;
 }
@@ -83,7 +89,7 @@ bool FSM::isAcceptState() {
   bool current_state = false;
   int current_state_index = this->state;
   if (this->states.size() > 0) {
-      State* pointer_to_current_state = this.states[current_state_index];
+      State* pointer_to_current_state = this->states[current_state_index];
       current_state = pointer_to_current_state->accept;
   }
   return current_state;
@@ -92,13 +98,21 @@ bool FSM::isAcceptState() {
 State* FSM::getState(int id) {
   // TODO
   FSM* fsm = this;
-  //cout << "this id? " << id << " = " << fsm->states[id] << "\n";
-  if (fsm->states[id] != NULL  && (fsm->states.size() > id)) {
-      //cout << "state size? " << id << " = " << fsm->states.size() << "\n";
-      return fsm->states[id];
-  } else {
+  cout << "this id? " << id << " = " << fsm->states.size() << "\n";
+  if (fsm->states.size() <= id) {
       return NULL;
+  } else if (fsm->states[id] != NULL  && (fsm->states.size() > id)) {
+        return fsm->states[id];
   }
+//  if (fsm->states[id] == NULL) {
+//      return NULL;
+//  }
+//  if (fsm->states[id] != NULL  && (fsm->states.size() > id)) {
+//      //cout << "state size? " << id << " = " << fsm->states.size() << "\n";
+//      return fsm->states[id];
+//  } else {
+//      return NULL;
+//  }
 
 }
 
@@ -114,26 +128,51 @@ int FSM::getDefaultState() {
 }
 
 void FSM::setState(int id) {
+    State* current_state = this->states[id];
+    this->state = id;
   // TODO  
 }
 
 bool FSM::handleSignal(int signal) {
+//    toDo: finish this first.
   // like addTransition, the documentation is longer than the
   // implementation. Here's my pseudocode:
   //
   // 1. If the FSM is currently in a bad state, return false.
-    if (this->state == -1) {return false;}
-  //
+    cout << "signal: " << signal << "\n";
+
+    FSM* s = this;
+    int state_index = s->getCurrentState();
+    if (state_index == -1) {return false;}
+    State* current_state = s->states[state_index];
+    cout << "get current state: " << s->getCurrentState() << "\n";
+    State* state_detail;
+    cout << 'state index' << state_index << "\n";
+    cout << 'state size' << s->states.size() << "\n";
+
+
   // 2. Iterate through the current state's normal transitions and
   // look for one that has the same signal as the one given to the
   // method.
+  bool found = false;
+    for (int i=0; i<state_detail->trans.size() - 1; i++) {
+        int transition_index = state_detail->trans[i];
+        Transition* this_transition = s->transitions[transition_index];
+        int signal = this_transition->signal;
 
-    for (int i=0; i<this->state->trans.size(); i++) {
-
-        if (this->transitions[i]->signal == signal) {
+        cout << "many signals: " << signal << "\n";
+        if (this_transition->signal == signal) {
             //if
+            found = true;
+            this->state = this_transition->next_state;
+            return true;
         }
     }
+//
+//  if (!found) {
+//        if (state_detail->failure_trans > 0) {return false;}
+//        //else {}
+//  }
   //
   // 3. If there wasn't a normal transition, see if there was a
   // failure_trans transition for the state. If not, return false.

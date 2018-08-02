@@ -63,7 +63,7 @@ TEST_CASE("FSM: test defaults", "[default and counts]") {
   int current = fsm.state;
   REQUIRE(current == -1); // Default current state should be -1
   current = fsm.getCurrentState();
-  REQUIRE(current == -1); // getCurrentState should return fsm.state  
+  REQUIRE(current == -1); // getCurrentState should return fsm.state
   bool accept = fsm.isAcceptState();
   REQUIRE(accept == false); // Default accept state should be false
   State* bogus = fsm.getState(0);
@@ -99,6 +99,7 @@ TEST_CASE("FSM: add states", "[current set state]") {
   current = fsm.getCurrentState();
   REQUIRE(current == odd); // Current state is wrong
   accept = fsm.isAcceptState();
+    // test
   REQUIRE_FALSE(accept); // Accept state should be false
   int count = fsm.countStates();
   REQUIRE(count == 2); // There should be two states
