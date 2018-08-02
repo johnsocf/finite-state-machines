@@ -43,10 +43,10 @@ int FSM::addTransition(int stateA, int stateB,
   //
   // 1. if stateA or stateB is out of range for the states vector,
   // return -1.
-    cout << "states size: " << this->states.size() << "\n";
-    cout << "state A: " << stateA << "\n";
-    cout << "state B: " << stateB << "\n";
-    cout << "signal on input: " << signal << "\n";
+    //cout << "states size: " << this->states.size() << "\n";
+    //cout << "state A: " << stateA << "\n";
+    //cout << "state B: " << stateB << "\n";
+    cout << "SIGNAL ON INPUT: " << signal << "\n";
     if ((this->states.size() < stateA) || (this->states.size() < stateB)) {
         cout << "out of range returning -1 : \n";
         return -1;
@@ -58,18 +58,59 @@ int FSM::addTransition(int stateA, int stateB,
   // need to look at each id in the state's `trans` vector. if there's
   // a duplicate, return -1.
     State* state_a = this->states[stateA];
-    cout << "state a trans size" << state_a->trans.size() << "\n";
+    //cout << "state a trans size" << state_a->trans.size() << "\n";
     // if 'failure - check failure trans'
 //    toDo: determine if new trans is a failure signal
+    bool a_has_trans = false;
     if (state_a->trans.size() > 0) {
         for (int i=0; i< state_a->trans.size(); i++) {
-            cout << "trans id in loop!" << state_a->trans[i] << "\n";
+            cout << "trans id in loop within specific state!" << state_a->trans[i] << "\n";
             if (state_a->trans[i] == signal) {
-                cout << "duplicate found! \n";
-                return -1;
+                cout << "duplicate found in trans set! \n";
+                a_has_trans = true;
+                //return -1;
+            }
+        }
+
+//        toDo: check for duplicates - that's why tests failing...'
+    }
+
+    if (this->transitions.size() > 0) {
+        for (int i=0; i< this->transitions.size(); i++) {
+            //cout << "trans id in loop SET!!" << this->transitions[i]->signal << "\n";
+            if (this->transitions[i]->signal == signal) {
+                cout << "duplicate found in transitions SET! \n";
+                cout << "has trans: " << a_has_trans << "\n";
+                cout << "NEXT STATE: " << this->transitions[i]->next_state << "\n";
+                cout << "state b: " << stateB << "\n";
+                bool a_has_trans = false;
+                if (state_a->trans.size() > 0) {
+                    //state a at i... reverse.
+                    //state_a->trans[i] ==
+                    for (int j=0; j< state_a->trans.size(); j++) {
+                        cout << "trans id in loop within specific state! " << state_a->trans[i] << "\n";
+                        cout << " state A TRANS ARRAY VALUE : " << state_a->trans[j] << "\n";
+                        if ((state_a->trans[j] == stateA) && (this->transitions[i]->next_state == stateB)) {
+                            cout << "remove!!! \n";
+                            return -1;
+                        }
+//                        if (state_a->trans[i] == signal) {
+//                            cout << "duplicate found in trans set! \n";
+//                            a_has_trans = true;
+//                            //return -1;
+//                        }
+                    }
+
+//                  toDo: check for duplicates - that's why tests failing...'
+                }
+//                if (a_has_trans && (transitions[i]->next_state == stateB)) {
+//                    return -1;
+//                }
+
             }
         }
     }
+
 
   //
   // 3. build a new Transition, and set its values.
@@ -80,14 +121,16 @@ int FSM::addTransition(int stateA, int stateB,
   //
   // 4. add the new transition to the FSM and get its ID.
     this->transitions.push_back(new_transition);
-    cout << "new state a trans size" << this->transitions.size() << "\n";
+    cout << "new state a trans size: " << this->transitions.size() << "\n";
     int new_transitions_id = this->transitions.size()-1;
+    cout << "pushback to a: " << new_transitions_id << "\n";
 
 
   //
   // 5. using the State* from step 2, use the new transition ID to
   // either set the failure_trans or add to the trans list.
     state_a->trans.push_back(new_transitions_id);
+    cout << "NEW TRANSITION ADDED: a,b: " << stateA << ", " << stateB << ", signal: " << signal << " label: " << transLabel << "\n";
   //
   // 6. return the new transition's ID.
     return new_transitions_id;
