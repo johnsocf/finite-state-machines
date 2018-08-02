@@ -43,21 +43,54 @@ int FSM::addTransition(int stateA, int stateB,
   //
   // 1. if stateA or stateB is out of range for the states vector,
   // return -1.
+    cout << "states size: " << this->states.size() << "\n";
+    cout << "state A: " << stateA << "\n";
+    cout << "state B: " << stateB << "\n";
+    cout << "signal on input: " << signal << "\n";
+    if ((this->states.size() < stateA) || (this->states.size() < stateB)) {
+        cout << "out of range returning -1 : \n";
+        return -1;
+    }
   //
   // 2. get the State* for stateA and look for a duplicate
   // transition. if the new transition is FAILURE_SIGNAL, only need to
   // check the state's `failure_trans`. if it is a regular signal,
   // need to look at each id in the state's `trans` vector. if there's
   // a duplicate, return -1.
+    State* state_a = this->states[stateA];
+    cout << "state a trans size" << state_a->trans.size() << "\n";
+    // if 'failure - check failure trans'
+//    toDo: determine if new trans is a failure signal
+    if (state_a->trans.size() > 0) {
+        for (int i=0; i< state_a->trans.size(); i++) {
+            cout << "trans id in loop!" << state_a->trans[i] << "\n";
+            if (state_a->trans[i] == signal) {
+                cout << "duplicate found! \n";
+                return -1;
+            }
+        }
+    }
+
   //
   // 3. build a new Transition, and set its values.
+    Transition* new_transition = new Transition;
+    new_transition->label = transLabel;
+    new_transition->signal = signal;
+    new_transition->next_state = stateB;
   //
   // 4. add the new transition to the FSM and get its ID.
+    this->transitions.push_back(new_transition);
+    cout << "new state a trans size" << this->transitions.size() << "\n";
+    int new_transitions_id = this->transitions.size()-1;
+
+
   //
   // 5. using the State* from step 2, use the new transition ID to
   // either set the failure_trans or add to the trans list.
+    state_a->trans.push_back(new_transitions_id);
   //
   // 6. return the new transition's ID.
+    return new_transitions_id;
 
   // TODO
   return 0;
@@ -118,7 +151,15 @@ State* FSM::getState(int id) {
 
 Transition* FSM::getTransition(int id) {
   // TODO
-  return NULL;
+    cout << "transition id: " << id << "\n";
+    cout << "transition size: " << this->transitions.size() << "\n";
+    if (id < this->transitions.size()) {
+        return this->transitions[id];
+    } else {
+        return NULL;
+    }
+
+
 }
 
 int FSM::getDefaultState() {
