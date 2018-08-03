@@ -21,7 +21,7 @@ int FSM::addState(string label, bool is_accept_state) {
   //new_state->trans;
   this->states.push_back(new_state);
   int state_list_length = this->states.size();
-  cout << "state list length: " << this->states.size() << "\n";
+  //cout << "state list length: " << this->states.size() << "\n";
   int index_of_new_state = state_list_length - 1;
   if (state_list_length == 1) {
       this->state = index_of_new_state;
@@ -46,9 +46,9 @@ int FSM::addTransition(int stateA, int stateB,
     //cout << "states size: " << this->states.size() << "\n";
     //cout << "state A: " << stateA << "\n";
     //cout << "state B: " << stateB << "\n";
-    cout << "SIGNAL ON INPUT: " << signal << "\n";
+    //cout << "SIGNAL ON INPUT: " << signal << "\n";
     if ((this->states.size() < stateA) || (this->states.size() < stateB)) {
-        cout << "out of range returning -1 : \n";
+        //cout << "out of range returning -1 : \n";
         return -1;
     }
   //
@@ -64,9 +64,9 @@ int FSM::addTransition(int stateA, int stateB,
     bool a_has_trans = false;
     if (state_a->trans.size() > 0) {
         for (int i=0; i< state_a->trans.size(); i++) {
-            cout << "trans id in loop within specific state!" << state_a->trans[i] << "\n";
+            //cout << "trans id in loop within specific state!" << state_a->trans[i] << "\n";
             if (state_a->trans[i] == signal) {
-                cout << "duplicate found in trans set! \n";
+                //cout << "duplicate found in trans set! \n";
                 a_has_trans = true;
                 //return -1;
             }
@@ -79,19 +79,19 @@ int FSM::addTransition(int stateA, int stateB,
         for (int i=0; i< this->transitions.size(); i++) {
             //cout << "trans id in loop SET!!" << this->transitions[i]->signal << "\n";
             if (this->transitions[i]->signal == signal) {
-                cout << "duplicate found in transitions SET! \n";
-                cout << "has trans: " << a_has_trans << "\n";
-                cout << "NEXT STATE: " << this->transitions[i]->next_state << "\n";
-                cout << "state b: " << stateB << "\n";
+//                cout << "duplicate found in transitions SET! \n";
+//                cout << "has trans: " << a_has_trans << "\n";
+//                cout << "NEXT STATE: " << this->transitions[i]->next_state << "\n";
+//                cout << "state b: " << stateB << "\n";
                 bool a_has_trans = false;
                 if (state_a->trans.size() > 0) {
                     //state a at i... reverse.
                     //state_a->trans[i] ==
                     for (int j=0; j< state_a->trans.size(); j++) {
-                        cout << "trans id in loop within specific state! " << state_a->trans[i] << "\n";
-                        cout << " state A TRANS ARRAY VALUE : " << state_a->trans[j] << "\n";
+                        //cout << "trans id in loop within specific state! " << state_a->trans[i] << "\n";
+                        //cout << " state A TRANS ARRAY VALUE : " << state_a->trans[j] << "\n";
                         if ((state_a->trans[j] == stateA) && (this->transitions[i]->next_state == stateB)) {
-                            cout << "remove!!! \n";
+                            //cout << "remove!!! \n";
                             return -1;
                         }
 //                        if (state_a->trans[i] == signal) {
@@ -121,16 +121,16 @@ int FSM::addTransition(int stateA, int stateB,
   //
   // 4. add the new transition to the FSM and get its ID.
     this->transitions.push_back(new_transition);
-    cout << "new state a trans size: " << this->transitions.size() << "\n";
+    //cout << "new state a trans size: " << this->transitions.size() << "\n";
     int new_transitions_id = this->transitions.size()-1;
-    cout << "pushback to a: " << new_transitions_id << "\n";
+    //cout << "pushback to a: " << new_transitions_id << "\n";
 
 
   //
   // 5. using the State* from step 2, use the new transition ID to
   // either set the failure_trans or add to the trans list.
     state_a->trans.push_back(new_transitions_id);
-    cout << "NEW TRANSITION ADDED: a,b: " << stateA << ", " << stateB << ", signal: " << signal << " label: " << transLabel << "\n";
+    //cout << "NEW TRANSITION ADDED: a,b: " << stateA << ", " << stateB << ", signal: " << signal << " label: " << transLabel << "\n";
   //
   // 6. return the new transition's ID.
     return new_transitions_id;
@@ -153,7 +153,7 @@ int FSM::countTransitions() {
 
 int FSM::getCurrentState() {
   // TODO
-  cout << "current state: " << this->state << "\n";
+  //cout << "current state: " << this->state << "\n";
   int i = this->state;
   //cout << this->states[i]->label << '\n';
   return this->state;
@@ -218,45 +218,68 @@ void FSM::setState(int id) {
 }
 
 bool FSM::handleSignal(int signal) {
+//    FSM* s = this;
+//    cout << "this states size: " << this->states.size() << "\n";
+//    for (int i=0; i<this->states.size(); i++) {
+//        State* current_state = s->states[i];
+//        cout << "state label: " << current_state->label << "\n";
+//        cout << "has transitions: \n";
+//        for (int j=0; j<current_state->trans.size(); j++) {
+//            int transition_id = current_state->trans[j];
+//            cout << "transition id: " << transition_id << "\n";
+//        }
+//    }
+
 //    toDo: finish this first.
   // like addTransition, the documentation is longer than the
   // implementation. Here's my pseudocode:
   //
   // 1. If the FSM is currently in a bad state, return false.
-    cout << "signal: " << signal << "\n";
-
+//    cout << "SIGNAL: " << signal << "\n";
+//
     FSM* s = this;
     int state_index = s->getCurrentState();
     if (state_index == -1) {return false;}
     State* current_state = s->states[state_index];
-    cout << "get current state: " << s->getCurrentState() << "\n";
-    State* state_detail;
-    cout << 'state index' << state_index << "\n";
-    cout << 'state size' << s->states.size() << "\n";
-
-
+    cout << 'state index: ' << state_index << "\n";
+    cout << "get current state: " << current_state << "\n";
+    cout << "this state: " << s->state << "\n";
   // 2. Iterate through the current state's normal transitions and
   // look for one that has the same signal as the one given to the
   // method.
-  bool found = false;
-    for (int i=0; i<state_detail->trans.size() - 1; i++) {
-        int transition_index = state_detail->trans[i];
-        Transition* this_transition = s->transitions[transition_index];
-        int signal = this_transition->signal;
 
-        cout << "many signals: " << signal << "\n";
-        if (this_transition->signal == signal) {
-            //if
-            found = true;
-            this->state = this_transition->next_state;
-            return true;
+    // maybe iterate through all transitions...
+
+
+  bool found = false;
+    if (current_state->trans.size() > 0 && current_state) {
+        for (int i=0; i<current_state->trans.size(); i++) {
+            int transition_index = current_state->trans[i];
+            cout << "transition index: " << transition_index << "\n";
+            Transition* this_transition = s->transitions[transition_index];
+            int transition_signal = this_transition->signal;
+            cout << "this transition signal : " << this_transition->signal << "\n";
+            if (transition_signal == signal) {
+                found = true;
+                cout << "transition to: " << this_transition->next_state << "\n";
+                this->state = this_transition->next_state;
+                return true;
+            }
         }
     }
-//
-//  if (!found) {
-//        if (state_detail->failure_trans > 0) {return false;}
-//        //else {}
-//  }
+
+
+
+  if (!found) {
+      cout << "failure trans: " << current_state->failure_trans << "\n";
+      cout << "is accepting state: " << this->isAcceptState() << "\n";
+      int failure_trans_index = current_state->failure_trans;
+      if (failure_trans_index < 0) {return false;}
+      else {
+          Transition* this_transition = s->transitions[failure_trans_index];
+          this->state = this_transition->next_state;
+      }
+  }
   //
   // 3. If there wasn't a normal transition, see if there was a
   // failure_trans transition for the state. If not, return false.
